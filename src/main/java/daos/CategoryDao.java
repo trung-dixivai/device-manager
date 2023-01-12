@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class CategoryDao implements Dao<Category> {
-    private Connection connection = ConnectDatabase.getConnection();
+    private Connection connection = ConnectDatabase.connection;
 
     @Override
     public Notification<Category> create(Category data) {

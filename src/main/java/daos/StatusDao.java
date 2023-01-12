@@ -14,7 +14,7 @@ import java.util.Vector;
 
 public class StatusDao implements Dao<Status>{
 
-    private Connection connection = ConnectDatabase.getConnection();
+    private Connection connection = ConnectDatabase.connection;
 
 
     @Override

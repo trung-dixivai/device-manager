@@ -5,27 +5,22 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectDatabase {
-    public final static String DB_NAME = "QuanLyThetBiCoDinhNhaTruong";
-    public final static String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    public final static String URL = "jdbc:sqlserver://localhost:1433;databaseName=" + DB_NAME+";encrypt=true;trustServerCertificate=true";
-    public final static String USER_NAME = "sa";
-    public final static String PASSWORD = "1";
+    public static Connection connection = getConnection();
 
 
     public static Connection getConnection() {
+        Connection conn = null;
         try {
-            Class.forName(DRIVER);
-            System.out.println(" Kết Nối Thành Công ");
-            return DriverManager.getConnection(URL, USER_NAME, PASSWORD);
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("Lỗi Kết Nối");
-            e.printStackTrace();
+            String url = "jdbc:mysql://localhost:3306/qlthietbi";
+            String DB_NAME = "qlthietbi";
+            String USER_NAME = "root";
+            String USER_PASSWORD = "namnam";
+            conn = DriverManager.getConnection(url, USER_NAME, USER_PASSWORD);
+            System.out.println("Connected to the MySQL server successfully.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        getConnection();
+        return conn;
     }
 
 }

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class DeviceDao implements Dao<Device> {
-    private Connection connection = ConnectDatabase.getConnection();
+    private Connection connection = ConnectDatabase.connection;
     private CategoryDao categoryDao = new CategoryDao();
     private StatusDao statusDao = new StatusDao();
     @Override
@@ -21,7 +21,7 @@ public class DeviceDao implements Dao<Device> {
         Notification<Device> notification = new Notification<>();
         if (notification != null) {
             try {
-                String sql = "INSERT INTO devices ( name,description,importDate,quantity,id_categories,id_status) VALUES ( ?,?,?,?,?,?)";
+                String sql = "INSERT INTO devices ( name,description,importDate,quantity,id_category,id_status) VALUES ( ?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
                 preparedStatement.setString(1, data.getName());
@@ -53,7 +53,7 @@ public class DeviceDao implements Dao<Device> {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 CategoryDao categoryDao = new CategoryDao();
-                Category category = categoryDao.findOne(resultSet.getInt("id_categories"));
+                Category category = categoryDao.findOne(resultSet.getInt("id_category"));
                 StatusDao statusDao = new StatusDao();
                 Status status = statusDao.findOne(resultSet.getInt("id_status"));
                 return new
@@ -85,7 +85,7 @@ public class DeviceDao implements Dao<Device> {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Category category = categoryDao.findOne(resultSet.getInt("id_categories"));
+                Category category = categoryDao.findOne(resultSet.getInt("id_category"));
                 Status status = statusDao.findOne(resultSet.getInt("id_status"));
                 Device device = new
                         Device(resultSet.getInt("id"),
@@ -164,7 +164,7 @@ public class DeviceDao implements Dao<Device> {
             return notification;
         }
         try {
-            String sqlupdate = "UPDATE devices SET name =?, description =?, importDate =?, quantity=? ,id_categories=? ,id_status=? WHERE id = ?";
+            String sqlupdate = "UPDATE devices SET name =?, description =?, importDate =?, quantity=? ,id_category=? ,id_status=? WHERE id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sqlupdate);
 
             preparedStatement.setString(1, data.getName());
