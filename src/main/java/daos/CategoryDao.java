@@ -68,7 +68,7 @@ public class CategoryDao implements Dao<Category> {
                 String name = resultSet.getString("name");
                 Boolean isRent = resultSet.getBoolean("isRent");
                 System.out.println(isRent);
-                categories.add(new Category(id,name,isRent));
+                categories.add(new Category(id, name, isRent));
 
 
             }
@@ -139,8 +139,8 @@ public class CategoryDao implements Dao<Category> {
     }
 
     public static void main(String[] args) {
-        CategoryDao categoryDao=new CategoryDao();
-     Notification<Category> notification=categoryDao.create(new Category(1,"Thiết Bị Cố Định",true));
+        CategoryDao categoryDao = new CategoryDao();
+        Notification<Category> notification = categoryDao.create(new Category(1, "Thiết Bị Cố Định", true));
 
     }
 }

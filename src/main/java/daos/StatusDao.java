@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class StatusDao implements Dao<Status>{
+public class StatusDao implements Dao<Status> {
 
     private Connection connection = ConnectDatabase.connection;
 
@@ -28,6 +28,7 @@ public class StatusDao implements Dao<Status>{
                 preparedStatement.executeUpdate();
                 notification.setCheck(true);
                 notification.setData(data);
+                notification.setString("Create successfully");
             } catch (SQLException e) {
                 e.printStackTrace();
                 notification.setCheck(false);
@@ -55,7 +56,6 @@ public class StatusDao implements Dao<Status>{
         }
 
     }
-
 
 
     @Override
@@ -107,7 +107,7 @@ public class StatusDao implements Dao<Status>{
     @Override
     public Notification<Status> update(int id, Status data) {
         Notification<Status> notification = new Notification<>();
-        StatusDao statusDao=new StatusDao();
+        StatusDao statusDao = new StatusDao();
         Status status = statusDao.findOne(id);
         if (status == null) {
             notification.setCheck(false);
@@ -131,11 +131,24 @@ public class StatusDao implements Dao<Status>{
         }
     }
 
-;
+    public Vector getData() {
+        Vector<Status> statuses =findAll();
+        Vector result = new Vector();
+        for (Status status : statuses) {
+            Vector temp = new Vector();
+            temp.add(status.getId());
+            temp.add(status.getName());
+            result.add(temp);
+        }
+        return result;
+    }
+
+    ;
+
     public static void main(String[] args) {
         StatusDao statusDao = new StatusDao();
 
-  Notification<Status> deviceNotification = statusDao.update(1,new Status(1, "Đang sử dụng"));
+        Notification<Status> deviceNotification = statusDao.update(1, new Status(1, "Đang sử dụng"));
 //        Notification<Status> deviceNotification1 = statusDao.create(new Status(2, "Đang được bảo hành"));
         System.out.println(deviceNotification);
     }

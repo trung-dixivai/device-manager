@@ -69,7 +69,7 @@ public class DeviceManger {
         jPanel.add(jPanelmota);
         JPanel jPanela = new JPanel();
         jPanela.setLayout(new GridLayout(7, 1));
-        jPanela.add(new JLabel("  ID"));
+        jPanela.add(new JLabel("  ID Tự Tăng"));
         jPanela.add(new JLabel("  Name Decive"));
         jPanela.add(new JLabel("  ID category"));
         jPanela.add(new JLabel("  ID status"));
@@ -78,7 +78,7 @@ public class DeviceManger {
         jPanela.add(new JLabel("  Description"));
         JPanel jPanelb = new JPanel();
         jPanelb.setLayout(new GridLayout(7, 1));
-        JLabel ID = new JLabel(" ID TỰ ĐỘNG");
+        JLabel ID = new JLabel();
         jPanelb.add(ID);
         namedevice = new JTextField();
         jPanelb.add(namedevice);
@@ -112,7 +112,6 @@ public class DeviceManger {
         vTitle.add("Description");
         vTitle.add("Import date");
         vTitle.add("Quantity");
-
         vData = deviceDao.getData();
         table = new JTable();
         table.setModel(new DefaultTableModel(vData, vTitle));
@@ -153,7 +152,7 @@ public class DeviceManger {
                         statusJComboBox.setSelectedItem(statusJComboBox.getModel().getElementAt(i));
                 }
                 namedevice.setText(table.getModel().getValueAt(row, 1) + "");
-                JTQuantity.setText(table.getModel().getValueAt(row, 6) + " ");
+                JTQuantity.setText(table.getModel().getValueAt(row, 6) + "");
                 mota.setText(table.getModel().getValueAt(row, 4) + "");
                 datePicker1.getJFormattedTextField().setText(table.getModel().getValueAt(row, 5) + "");
                 // Lay category theo id_category cua dong vua click
@@ -243,16 +242,45 @@ public class DeviceManger {
             public void actionPerformed(ActionEvent e) {
                 Device device = new Device();
                 device.setId(id_update);
-                Notification<Device> deviceNotification = deviceDao.delete(device.getId());
-                thongBao(deviceNotification);
-                System.out.println(deviceNotification);
-                nodata();
-
+                int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xoá id = " + id_update + " không?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    Notification<Device> deviceNotification = deviceDao.delete(device.getId());
+                    thongBao(deviceNotification);
+                    System.out.println(deviceNotification);
+                    nodata();
+                }
             }
         });
         Icon icontimkiem = new ImageIcon("C:\\Users\\admin\\Downloads\\111.png");
         JButton timkiem = new JButton("Tìm Kiếm", icontimkiem);
         timkiem.setBackground(Color.YELLOW);
+
+        timkiem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String result_input = JOptionPane.showInputDialog(null, "Nhập id hoặc tên thiết bị cần tìm kiếm", JOptionPane.INFORMATION_MESSAGE);
+                if (result_input != null) {
+                    if (result_input.length() > 0) {
+                        int number = 0;
+                        try {
+                            number = Integer.parseInt(result_input);
+                        } catch (Exception e1) {
+
+                        }
+                        vData = deviceDao.findByKeyword(result_input, number);
+                        table.setModel(new DefaultTableModel(vData, vTitle));
+                        nodata();
+                    } else {
+                        vData = deviceDao.getData();
+                        table.setModel(new DefaultTableModel(vData, vTitle));
+                    }
+                } else {
+                    vData = deviceDao.getData();
+                    table.setModel(new DefaultTableModel(vData, vTitle));
+                }
+            }
+        });
+
         jPanel3.add(timkiem, icontimkiem);
         jPanel1.add(jpanel12);
         jPanel1.add(jPanel3);

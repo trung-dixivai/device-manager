@@ -71,6 +71,32 @@ public class DeviceDao implements Dao<Device> {
         return null;
     }
 
+    public Device findByKeyword(String keyword) {
+        String sql = "SELECT * FROM  devices WHERE name = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, keyword);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                CategoryDao categoryDao = new CategoryDao();
+                Category category = categoryDao.findOne(resultSet.getInt("id_category"));
+                StatusDao statusDao = new StatusDao();
+                Status status = statusDao.findOne(resultSet.getInt("id_status"));
+                return new
+                        Device(resultSet.getInt("Id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getString("importDate"),
+                        resultSet.getInt("quantity"),
+                        category,
+                        status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Vector<Status> getAllStatus() {
         return this.statusDao.findAll();
     }
@@ -100,6 +126,44 @@ public class DeviceDao implements Dao<Device> {
 
             }
             return devices;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public Vector<Device> findByKeyword(String keyword, int number) {
+        Vector result = new Vector();
+        String sql = "SELECT * FROM  devices WHERE name = ? OR id = ? OR quantity = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, keyword);
+            preparedStatement.setInt(2, number);
+            preparedStatement.setInt(3, number);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Category category = categoryDao.findOne(resultSet.getInt("id_category"));
+                Status status = statusDao.findOne(resultSet.getInt("id_status"));
+                Device device = new
+                        Device(resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getString("importDate"),
+                        resultSet.getInt("quantity"),
+                        category,
+                        status);
+                Vector temp = new Vector();
+                temp.add(device.getId());
+                temp.add(device.getName());
+                temp.add(device.getCategory().getName());
+                temp.add(device.getStatus().getName());
+                temp.add(device.getDescription());
+                temp.add(device.getImportDate());
+                temp.add(device.getQuantity());
+                result.add(temp);
+            }
+            return result;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
